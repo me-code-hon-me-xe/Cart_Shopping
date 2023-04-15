@@ -13,6 +13,7 @@ import hanu.a2_2001040023.Models.Product;
 
 public class CartActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
+    // comment1
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
