@@ -9,16 +9,24 @@ public class Product implements Serializable {
     private int unitPrice;
     private String category;
     private String thumbnail;
+    private int quantity;
 
-    public Product(String name, int unitPrice, String thumbnail) {
+
+
+    private int product_sum_price;
+
+
+
+
+    public Product(String name, int unitPrice, String thumbnail, int quantity, int product_sum_price) {
 
         this.name = name;
         this.unitPrice = unitPrice;
 
         this.thumbnail = thumbnail;
+        this.quantity = quantity;
+        this.product_sum_price = product_sum_price;
     }
-
-
 
     public int getId() {
         return id;
@@ -60,5 +68,19 @@ public class Product implements Serializable {
         this.thumbnail = thumbnail;
     }
 
+    public int getQuantity() {
+        return quantity;
+    }
 
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public int getProduct_sum_price() {
+        return product_sum_price;
+    }
+
+    public void setProduct_sum_price(int product_sum_price) {
+        this.product_sum_price = product_sum_price;
+    }
 }

@@ -69,7 +69,7 @@
         app:layout_constraintTop_toTopOf="@+id/priceTextView_pl" />
 
     <ImageView
-        android:id="@+id/cartAddTextView"
+        android:id="@+id/cartAddImageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
