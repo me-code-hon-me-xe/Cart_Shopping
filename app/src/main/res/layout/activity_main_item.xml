@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    android:background="@drawable/card_border"
+    android:elevation="3dp">
+
+
+    <ImageView
+        android:id="@+id/imageView_pl"
+        android:layout_width="wrap_content"
+        android:layout_height="150dp"
+        android:layout_marginTop="1.5dp"
+        android:paddingLeft="1.5dp"
+        android:paddingRight="1.5dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/nameTextView_pl"
+        android:layout_width="wrap_content"
+        android:layout_height="41.3dp"
+        android:gravity="left"
+        android:padding="5dp"
+        android:text="Helllllll"
+        android:textColor="@color/black"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textSize="12sp"
+        android:textStyle="normal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView_pl" />
+
+    <TextView
+        android:id="@+id/priceTextView_pl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        android:layout_marginBottom="6dp"
+        android:gravity="left"
+        android:inputType="number"
+        android:padding="5dp"
+        android:text="Helllllll"
+        android:textColor="@color/yellow"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/moneySignTextView_pl"
+        app:layout_constraintTop_toBottomOf="@+id/nameTextView_pl"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <TextView
+        android:id="@+id/moneySignTextView_pl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="₫"
+        android:textColor="@color/yellow"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/priceTextView_pl"
+        app:layout_constraintEnd_toStartOf="@+id/priceTextView_pl"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/priceTextView_pl" />
+
+    <ImageView
+        android:id="@+id/cartAddTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:background="@drawable/cart_background"
+        android:padding="5dp"
+        android:clickable="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/cart_add_icon" />
+</androidx.constraintlayout.widget.ConstraintLayout>
