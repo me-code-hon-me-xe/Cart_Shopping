@@ -12,17 +12,26 @@ public class Product implements Serializable {
     private int quantity;
 
 
-
     private int product_sum_price;
 
 
+    @Override
+    public String toString() {
+        return "Product{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", unitPrice=" + unitPrice +
+                ", thumbnail='" + thumbnail + '\'' +
+                ", quantity=" + quantity +
+                ", product_sum_price=" + product_sum_price +
+                '}';
+    }
 
-
-    public Product(String name, int unitPrice, String thumbnail, int quantity, int product_sum_price) {
+    public Product(int id, String name, int unitPrice, String thumbnail, int quantity, int product_sum_price) {
 
         this.name = name;
         this.unitPrice = unitPrice;
-
+        this.id = id;
         this.thumbnail = thumbnail;
         this.quantity = quantity;
         this.product_sum_price = product_sum_price;
