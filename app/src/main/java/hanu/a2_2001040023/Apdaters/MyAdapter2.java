@@ -29,12 +29,15 @@ public class MyAdapter2 extends RecyclerView.Adapter<MyAdapter2.MyViewHolder2> {
 
     public CartActivity cartActivity;
     public int COLUMN_PRODUCT_QUANTITY;
+
     public MyCartCRUD myCartCRUD;
     private Context mContext;
-    private List<Product> productList = new ArrayList<>();
+    private List<Product> productList;
     private DecimalFormat formatter;
 
     public MyAdapter2(Context mContext) {
+        cartActivity = new CartActivity();
+        productList = new ArrayList<>();
         this.mContext = mContext;
         myCartCRUD = new MyCartCRUD(mContext);
     }
@@ -67,11 +70,6 @@ public class MyAdapter2 extends RecyclerView.Adapter<MyAdapter2.MyViewHolder2> {
             imageViewAddQuantity = itemView.findViewById(R.id.imageViewAddQuantity);
 
         }
-//        public void bind(Product product) {
-//            Picasso.get().load(product.getThumbnail()).into(imageView_pl2);
-//            nameTextView_pl2.setText(product.getName());
-//            priceTextView_pl2.setText(product.getUnitPrice());
-//        }
     }
 
 
@@ -121,6 +119,7 @@ public class MyAdapter2 extends RecyclerView.Adapter<MyAdapter2.MyViewHolder2> {
             @Override
             public void onClick(View v) {
                 COLUMN_PRODUCT_QUANTITY = myCartCRUD.getProductById(productModel.getId()).getQuantity();
+                System.out.println(productModel);
                 int COLUMN_PRODUCT_ID = productModel.getId();
                 COLUMN_PRODUCT_QUANTITY = COLUMN_PRODUCT_QUANTITY - 1;
                 String COLUMN_PRODUCT_NAME = productModel.getName();
@@ -128,17 +127,18 @@ public class MyAdapter2 extends RecyclerView.Adapter<MyAdapter2.MyViewHolder2> {
                 int COLUMN_PRODUCT_SUM_PRICE = COLUMN_PRODUCT_PRICE * COLUMN_PRODUCT_QUANTITY;
                 String COLUMN_PRODUCT_THUMBNAIL = String.valueOf(productModel.getThumbnail());
                 Product productCart = new Product(COLUMN_PRODUCT_ID, COLUMN_PRODUCT_NAME, COLUMN_PRODUCT_PRICE, COLUMN_PRODUCT_THUMBNAIL, COLUMN_PRODUCT_QUANTITY, COLUMN_PRODUCT_SUM_PRICE);
-                if (COLUMN_PRODUCT_QUANTITY == 0) {
+                if (productCart.getQuantity() == 0) {
+                    productList.remove(position);
                     myCartCRUD.delete(productCart);
-                    System.out.println("After delete: "  + myCartCRUD.getAllProducts());
+                    notifyItemRemoved(position);
+                    notifyItemRangeChanged(position, productList.size());
                 }else{
-                    System.out.println(myCartCRUD.getAllProducts());
                     myCartCRUD.update(productCart);
                     System.out.println(myCartCRUD.getAllProducts());
+                    holder.textViewQuantity.setText(String.valueOf(productCart.getQuantity()));
+                    holder.sumPriceTextView.setText(String.valueOf(formatter.format(productCart.getProduct_sum_price())));
                 }
-                holder.textViewQuantity.setText(String.valueOf(productCart.getQuantity()));
-                holder.sumPriceTextView.setText(String.valueOf(formatter.format(productCart.getProduct_sum_price())));
-            }
+                }
         });
 
     }

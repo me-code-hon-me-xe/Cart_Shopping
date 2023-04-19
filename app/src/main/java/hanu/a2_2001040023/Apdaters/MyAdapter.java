@@ -81,7 +81,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             public void onClick(View view) {
 
                 // get the data for this item
-                System.out.println(myCartCRUD.getAllProducts());
                 int COLUMN_PRODUCT_ID = productList.get(position).getId();
                 if(myCartCRUD.isProductExists(COLUMN_PRODUCT_ID)){
                     COLUMN_PRODUCT_QUANTITY = myCartCRUD.getProductById(productList.get(position).getId()).getQuantity();
@@ -101,35 +100,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                 }else{
                     myCartCRUD.insert(productCart);
                 }
-//                System.out.println(productCart);
-//                System.out.println(myCartCRUD.getProductById(COLUMN_PRODUCT_ID).toString());
-//                System.out.println(myCartCRUD.getAllProducts());
-
-//                System.out.println("List: " + myCartCRUD.products);
-//                System.out.println("product" + productCart);
-//                if (myCartCRUD.products.contains(product)) {
-//                    COLUMN_PRODUCT_QUANTITY = COLUMN_PRODUCT_QUANTITY + 1;
-//                } else {
-//                    COLUMN_PRODUCT_QUANTITY = 1;
-//                }
-
-//                // Check if product exit or not
-//                if (myCartCRUD.products.contains(productCart)) {
-//                    System.out.println("Already exit");
-//                    myCartCRUD.update(productCart);
-//                } else {
-//                    myCartCRUD.insert(productCart);
-//                    System.out.println("New");
-//                       }
-//
-//                System.out.println("This is list: " + myCartCRUD.products);
-
-
-                // create an Intent to start the activity_cart
-//                Intent intent = new Intent(mContext, CartActivity.class);
-                // pass the data to the activity_cart
-//                intent.putExtra("product", productCart);
-//                mContext.startActivity(intent);
             }
         });
 

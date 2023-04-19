@@ -4,7 +4,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
@@ -17,6 +22,9 @@ import hanu.a2_2001040023.database.MyCartCRUD;
 public class CartActivity extends AppCompatActivity {
     public MyCartCRUD myCartCRUD;
     private RecyclerView recyclerView;
+    public List<Product> products;
+    public MyAdapter2 adapter;
+    public ImageView cart_icon1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,16 +32,30 @@ public class CartActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerView2);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 1));
         myCartCRUD = new MyCartCRUD(this);
-        MyAdapter2 adapter = new MyAdapter2(CartActivity.this);
-        System.out.println(myCartCRUD.getAllProducts());
-        List<Product> products = myCartCRUD.getAllProducts();
+        adapter = new MyAdapter2(CartActivity.this);
+        products = myCartCRUD.getAllProducts();
+        System.out.println(products);
         for (Product product : products){
             adapter.addData(product);
         }
         recyclerView.setAdapter(adapter);
+        cart_icon1 = findViewById(R.id.cart_icon1);
+        cart_icon1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateTotalPrice();
+            }
+        });
+    }
 
 
-//        Product product = (Product) getIntent().getSerializableExtra("product");
-//        adapter.addData(product);
+    private void updateTotalPrice() {
+        int totalPrice = 0;
+        for (Product product : products) {
+            System.out.println(product);
+            totalPrice += product.getProduct_sum_price();
+        }
+        TextView totalPriceTextView = findViewById(R.id.totalPriceTextView);
+        totalPriceTextView.setText(Integer.toString(totalPrice));
     }
 }
