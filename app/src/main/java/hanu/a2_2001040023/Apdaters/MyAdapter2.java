@@ -44,8 +44,6 @@ public class MyAdapter2 extends RecyclerView.Adapter<MyAdapter2.MyViewHolder2> {
 
     public void addData(Product product) {
         productList.add(product);
-        System.out.println(product.getName());
-        System.out.println(productList.size());
     }
 
     public class MyViewHolder2 extends RecyclerView.ViewHolder {
@@ -107,9 +105,8 @@ public class MyAdapter2 extends RecyclerView.Adapter<MyAdapter2.MyViewHolder2> {
                 } else {
                     System.out.println("not exit");
                 }
-//                System.out.println(myCartCRUD.getAllProducts());
                 myCartCRUD.update(productCart);
-//                System.out.println(myCartCRUD.getAllProducts());
+                updateTotalPrice();
                 holder.textViewQuantity.setText(String.valueOf(productCart.getQuantity()));
                 holder.sumPriceTextView.setText(String.valueOf(formatter.format(productCart.getProduct_sum_price())));
             }
@@ -119,7 +116,6 @@ public class MyAdapter2 extends RecyclerView.Adapter<MyAdapter2.MyViewHolder2> {
             @Override
             public void onClick(View v) {
                 COLUMN_PRODUCT_QUANTITY = myCartCRUD.getProductById(productModel.getId()).getQuantity();
-                System.out.println(productModel);
                 int COLUMN_PRODUCT_ID = productModel.getId();
                 COLUMN_PRODUCT_QUANTITY = COLUMN_PRODUCT_QUANTITY - 1;
                 String COLUMN_PRODUCT_NAME = productModel.getName();
@@ -130,11 +126,12 @@ public class MyAdapter2 extends RecyclerView.Adapter<MyAdapter2.MyViewHolder2> {
                 if (productCart.getQuantity() == 0) {
                     productList.remove(position);
                     myCartCRUD.delete(productCart);
+                    updateTotalPrice();
                     notifyItemRemoved(position);
                     notifyItemRangeChanged(position, productList.size());
                 }else{
                     myCartCRUD.update(productCart);
-                    System.out.println(myCartCRUD.getAllProducts());
+                    updateTotalPrice();
                     holder.textViewQuantity.setText(String.valueOf(productCart.getQuantity()));
                     holder.sumPriceTextView.setText(String.valueOf(formatter.format(productCart.getProduct_sum_price())));
                 }
@@ -146,5 +143,14 @@ public class MyAdapter2 extends RecyclerView.Adapter<MyAdapter2.MyViewHolder2> {
     @Override
     public int getItemCount() {
         return productList.size();
+    }
+
+    public void updateTotalPrice(){
+        int total = 0;
+        for(Product product : myCartCRUD.getAllProducts()){
+            total += product.getProduct_sum_price();
+        }
+        CartActivity cartActivity = (CartActivity) mContext;
+        cartActivity.updateTotalPrice(total);
     }
 }

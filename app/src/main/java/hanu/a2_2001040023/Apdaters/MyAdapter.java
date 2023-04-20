@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.squareup.picasso.Picasso;
 
 import java.sql.SQLOutput;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +30,7 @@ import retrofit2.Callback;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     private MyCartDatabaseHelper dbHelper;
+    private DecimalFormat formatter;
 
     private List<Product> productList;
     private List<Product> listCheck;
@@ -62,7 +64,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
+        formatter = new DecimalFormat("#,###");
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.activity_main_item, parent, false);
         return new ViewHolder(view);
@@ -72,7 +74,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     public void onBindViewHolder(ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         product = productList.get(position);
         holder.nameTextView_pl.setText(product.getName());
-        holder.priceTextView_pl.setText(String.valueOf(product.getUnitPrice()));
+        holder.priceTextView_pl.setText(String.valueOf(formatter.format(product.getUnitPrice())));
         Picasso.get().load(product.getThumbnail()).into(holder.imageView_pl);
         holder.itemView.findViewById(R.id.cartAddImageView);
 

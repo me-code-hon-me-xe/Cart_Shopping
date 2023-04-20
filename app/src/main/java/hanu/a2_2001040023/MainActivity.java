@@ -17,8 +17,10 @@ import android.widget.Toast;
 import java.util.List;
 
 import hanu.a2_2001040023.Apdaters.MyAdapter;
+import hanu.a2_2001040023.Apdaters.MyAdapter2;
 import hanu.a2_2001040023.Models.Product;
 import hanu.a2_2001040023.Services.ProductService;
+import hanu.a2_2001040023.database.MyCartCRUD;
 import hanu.a2_2001040023.database.MyCartDatabaseHelper;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -28,21 +30,31 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
     public ImageView cart_icon;
-
+    public MyCartCRUD myCartCRUD;
+    public MyAdapter2 adapter2;
     // Database:
     private MyCartDatabaseHelper dbHelper;
     public MyAdapter adapter;
+    public List<Product> productList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        adapter2 = new MyAdapter2(MainActivity.this);
         dbHelper = new MyCartDatabaseHelper(this);
         cart_icon = findViewById(R.id.cart_icon);
         cart_icon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                myCartCRUD = new MyCartCRUD(MainActivity.this);
+                productList = myCartCRUD.getAllProducts();
+                int totalPrice = 0;
+                for(Product product : myCartCRUD.getAllProducts()){
+                    totalPrice += product.getProduct_sum_price();
+                }
                 Intent intent = new Intent(MainActivity.this, CartActivity.class);
+                intent.putExtra("totalPrice", totalPrice);
                 startActivity(intent);
             }
         });
@@ -89,4 +101,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+//    public void updateTotalPrice(){
+//        int total = 0;
+//        for(Product product : myCartCRUD.getAllProducts()){
+//            total += product.getProduct_sum_price();
+//        }
+//        CartActivity cartActivity = ;
+//        cartActivity.updateTotalPrice(total);
+//    }
 }
