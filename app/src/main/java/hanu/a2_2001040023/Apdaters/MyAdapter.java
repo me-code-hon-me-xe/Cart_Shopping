@@ -7,7 +7,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,22 +31,55 @@ import hanu.a2_2001040023.database.MyCartCRUD;
 import hanu.a2_2001040023.database.MyCartDatabaseHelper;
 import retrofit2.Callback;
 
-public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
+public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> implements Filterable {
     private MyCartDatabaseHelper dbHelper;
     private DecimalFormat formatter;
-
+    public List<Product> productListFull;
     private List<Product> productList;
     private List<Product> listCheck;
     private Product product;
     private Context mContext;
     private int COLUMN_PRODUCT_QUANTITY;
     public MyCartCRUD myCartCRUD;
+    public SearchView search;
     public MyAdapter(List<Product> productList, Context mContext) {
         this.productList = productList;
+        productListFull = new ArrayList<>(productList);
         this.mContext = mContext;
         myCartCRUD = new MyCartCRUD(mContext);
     }
 
+    @Override
+    public Filter getFilter() {
+        return productFilter;
+    }
+    private Filter productFilter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            List<Product> filteredList = new ArrayList<>();
+            if (constraint == null || constraint.length() == 0) {
+                filteredList.addAll(productListFull);
+            } else {
+                String filterPattern = constraint.toString().toLowerCase().trim();
+                for (Product item : productListFull) {
+                    if(item.getName().toLowerCase().contains(filterPattern)){
+                        filteredList.add(item);
+                    }
+                }
+            }
+
+            FilterResults results = new FilterResults();
+            results.values = filteredList;
+            return  results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            productList.clear();
+            productList.addAll((List) results.values);
+            notifyDataSetChanged();
+        }
+    };
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -117,6 +153,11 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         return productList.size();
     }
 
+    public void setProductList(List<Product> productList) {
+        this.productList = productList;
+        productListFull = new ArrayList<>(productList);
+        notifyDataSetChanged();
+    }
 }
 
 

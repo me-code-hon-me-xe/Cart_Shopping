@@ -10,11 +10,17 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import hanu.a2_2001040023.Apdaters.MyAdapter;
 import hanu.a2_2001040023.Apdaters.MyAdapter2;
@@ -28,7 +34,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
     public ImageView cart_icon;
     public MyCartCRUD myCartCRUD;
     public MyAdapter2 adapter2;
@@ -36,13 +42,23 @@ public class MainActivity extends AppCompatActivity {
     private MyCartDatabaseHelper dbHelper;
     public MyAdapter adapter;
     public List<Product> productList;
+
+    public SearchView search;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        adapter2 = new MyAdapter2(MainActivity.this);
+
+//        adapter = new MyAdapter(new ArrayList<>(), this);
         dbHelper = new MyCartDatabaseHelper(this);
+
+        search = findViewById(R.id.search);
+        search.setOnQueryTextListener(this);
+
+
         cart_icon = findViewById(R.id.cart_icon);
         cart_icon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
                 myCartCRUD = new MyCartCRUD(MainActivity.this);
                 productList = myCartCRUD.getAllProducts();
                 int totalPrice = 0;
-                for(Product product : myCartCRUD.getAllProducts()){
+                for (Product product : myCartCRUD.getAllProducts()) {
                     totalPrice += product.getProduct_sum_price();
                 }
                 Intent intent = new Intent(MainActivity.this, CartActivity.class);
@@ -58,6 +74,8 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+
         // Recycler View
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
@@ -79,9 +97,9 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Call Api Success", Toast.LENGTH_SHORT).show();
                 // get the list of products from the response body
                 List<Product> productList = response.body();
-
                 // create and set the adapter for the recycler view
-                adapter = new MyAdapter(productList,MainActivity.this);
+                adapter = new MyAdapter(productList, MainActivity.this);
+//                adapter.setProductList(productList);
                 recyclerView.setAdapter(adapter);
             }
 
@@ -91,22 +109,35 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Call Api Error", Toast.LENGTH_SHORT).show();
             }
         });
+
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(adapter != null){
+        if (adapter != null) {
             adapter.release();
         }
     }
 
-//    public void updateTotalPrice(){
-//        int total = 0;
-//        for(Product product : myCartCRUD.getAllProducts()){
-//            total += product.getProduct_sum_price();
-//        }
-//        CartActivity cartActivity = ;
-//        cartActivity.updateTotalPrice(total);
-//    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        search.clearFocus();
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        if (adapter != null) {
+            adapter.getFilter().filter(newText);
+        }
+        return false;
+    }
+
 }
