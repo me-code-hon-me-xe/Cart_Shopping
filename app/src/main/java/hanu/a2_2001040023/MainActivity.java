@@ -2,6 +2,7 @@ package hanu.a2_2001040023;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.ContentValues;
@@ -18,6 +19,15 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.lang.reflect.Type;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -25,7 +35,6 @@ import java.util.Locale;
 import hanu.a2_2001040023.Apdaters.MyAdapter;
 import hanu.a2_2001040023.Apdaters.MyAdapter2;
 import hanu.a2_2001040023.Models.Product;
-import hanu.a2_2001040023.Services.ProductService;
 import hanu.a2_2001040023.database.MyCartCRUD;
 import hanu.a2_2001040023.database.MyCartDatabaseHelper;
 import retrofit2.Call;
@@ -80,36 +89,49 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
 
-        // create a Retrofit instance
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://hanu-congnv.github.io/mpr-cart-api/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        // create a ProductService instance
-        ProductService productService = retrofit.create(ProductService.class);
-
-        // make the HTTP request to get all products
-        Call<List<Product>> call = productService.getAllProducts();
-        call.enqueue(new Callback<List<Product>>() {
+        new Thread(new Runnable() {
             @Override
-            public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
-                Toast.makeText(MainActivity.this, "Call Api Success", Toast.LENGTH_SHORT).show();
-                // get the list of products from the response body
-                List<Product> productList = response.body();
-                // create and set the adapter for the recycler view
-                adapter = new MyAdapter(productList, MainActivity.this);
-//                adapter.setProductList(productList);
-                recyclerView.setAdapter(adapter);
-            }
+            public void run() {
+                try {
+                    URL url = new URL("https://hanu-congnv.github.io/mpr-cart-api/products.json");
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn.setRequestMethod("GET");
+                    conn.connect();
 
-            @Override
-            public void onFailure(Call<List<Product>> call, Throwable t) {
-                // handle the failure case
-                Toast.makeText(MainActivity.this, "Call Api Error", Toast.LENGTH_SHORT).show();
-            }
-        });
+                    InputStream inputStream = conn.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
 
+                    StringBuilder sb = new StringBuilder();
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        sb.append(line);
+                    }
+
+                    String jsonString = sb.toString();
+
+                    Gson gson = new Gson();
+                    Type productListType = new TypeToken<List<Product>>(){}.getType();
+                    List<Product> productList = gson.fromJson(jsonString, productListType);
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            // create and set the adapter for the recycler view
+                            adapter = new MyAdapter(productList, MainActivity.this);
+                            recyclerView.setAdapter(adapter);
+                        }
+                    });
+
+                    reader.close();
+                    inputStream.close();
+                    conn.disconnect();
+
+                } catch (Exception e) {
+
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
     @Override
